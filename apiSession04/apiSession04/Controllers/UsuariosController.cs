@@ -31,7 +31,7 @@ namespace apiSession04.Controllers
         [HttpPost]
         public Usuario Login(Usuario usuario)
         {
-            return _context.Usuario.FirstOrDefault(u => u.Email == usuario.Email && u.Senha == usuario.Senha);
+            return _context.Usuario.FirstOrDefault(u => u.Email == usuario.Email && u.Senha == usuario.Senha); 
         }
     }
 }
