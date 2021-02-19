@@ -19,28 +19,35 @@ namespace apiSession04.Controllers
         SqlDataAdapter adapter;
         DataTable dt;
 
-        [HttpGet]
-        public IEnumerable<Usuario> GetUsuarios()
+        [HttpPost]
+        public Usuario LoginUsuarios(Usuario usuario)
         {
-            List<Usuario> usuarios = new List<Usuario>();
             try
             {
-                cmd = new SqlCommand("Select * From Usaurio inner join funcao on funcao.id =  usuario.funcaoid", conn);
+                cmd = new SqlCommand($"Select usuario.id as usuarioId, nome, email, telefone, funcao.id, funcao " +
+                    $"From usuario inner join funcao on funcao.id = usuario.funcaoid where email={usuario.Email} and Senha = {usuario.Senha}", conn);
                 conn.Open();
                 adapter = new SqlDataAdapter(cmd);
                 dt = new DataTable();
                 adapter.Fill(dt);
-                foreach (var item in dt.Rows)
+                Usuario usuarioLogado = null;
+                foreach (DataRow item in dt.Rows)
                 {
-
+                    usuarioLogado = new Usuario();
+                    usuarioLogado.Id = Convert.ToInt32(item["usuarioId"]);
+                    usuarioLogado.Nome = item["Nome"].ToString();
+                    usuarioLogado.Email = item["Email"].ToString();
+                    usuarioLogado.Telefone = item["Telefone"].ToString();
+                    usuarioLogado.FuncaoId = Convert.ToInt32(item["id"]);
                 }
                 conn.Close();
+                return usuarioLogado;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                return null;
             }
-            return usuarios;
         }
     }
 }
